@@ -8,10 +8,10 @@
 
 #import "LMAlertView.h"
 #import "LMEmbeddedViewController.h"
+#import "CAAnimation+Blocks.h" // DFH
 #import "LMModalItemTableViewCell.h"
-#import <CAAnimation+Blocks.h>
 
-@interface LMAlertView ()
+@interface LMAlertView ()	<UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, strong, readonly) UIView *alertContainerView;
 @property (nonatomic, strong, readonly) UIView *backgroundView;
@@ -340,10 +340,11 @@
 	[_alertContainerView addSubview:_backgroundView];
 	
 	CGRect frame;
-	frame.size = size;
+	frame = (CGRect){.size = size};
 	
 	_representationView = [[UIView alloc] initWithFrame:frame];
-    _representationView.center = CGPointMake([[UIScreen mainScreen] bounds].size.width / 2.0, [[UIScreen mainScreen] bounds].size.height / 2.0);
+    //_representationView.center = CGPointMake([[UIScreen mainScreen] bounds].size.width / 2.0, [[UIScreen mainScreen] bounds].size.height / 2.0);
+    _representationView.center = CGPointMake(177, 512);	// DFH
 	
 	_representationView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 	[_representationView.layer setMasksToBounds:YES];
@@ -371,12 +372,16 @@
 	[self.representationView addSubview:self];
 	
 	[self.alertContainerView addSubview:self.representationView];
+	
+	NSLog(@"FRAMES: _representationView=%@", NSStringFromCGRect([_representationView frame]));						// BG=%@ RV=%@ ABV=%@ CV=%@
 }
 
+#if 0
 - (void)setup
 {
 	[self setupWithSize:CGSizeMake(270.0, 152.0)];
 }
+#endif
 
 - (id)springAnimationForKeyPath:(NSString *)keyPath
 {
@@ -392,6 +397,29 @@
 	animation.duration = 0.5058237314224243;
 	
 	return animation;
+}
+
+- (void)transformAlertContainerViewForOrientation{
+#define DegreesToRadians(degrees) (degrees * M_PI / 180)
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    CGAffineTransform transform;
+    switch (orientation) {
+        case UIInterfaceOrientationLandscapeLeft:
+            transform = CGAffineTransformMakeRotation(-DegreesToRadians(90));
+            break;
+        case UIInterfaceOrientationLandscapeRight:
+            transform = CGAffineTransformMakeRotation(DegreesToRadians(90));
+            break;
+        case UIInterfaceOrientationPortraitUpsideDown:
+            transform = CGAffineTransformMakeRotation(DegreesToRadians(180));
+            break;
+        case UIInterfaceOrientationPortrait:
+        default:
+            transform = CGAffineTransformMakeRotation(DegreesToRadians(0));
+            break;
+    }
+    
+    [self.alertContainerView setTransform:transform];
 }
 
 - (void)show
@@ -412,6 +440,7 @@
 	self.window.windowLevel = UIWindowLevelAlert;
 	self.window.hidden = NO;
 	
+	[self transformAlertContainerViewForOrientation];
 	[self.window makeKeyAndVisible];
 	
 	if (self.controller == nil) {

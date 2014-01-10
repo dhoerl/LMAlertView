@@ -27,7 +27,7 @@
 #define kSpringAnimationClassName RBBSpringAnimation
 #endif
 
-@interface LMAlertView : UIView <UITableViewDataSource, UITableViewDelegate>
+@interface LMAlertView : UIView // DFH
 
 @property (nonatomic, strong, readonly) UIView *contentView;
 @property (nonatomic) BOOL keepTopAlignment;
