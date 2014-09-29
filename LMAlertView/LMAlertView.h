@@ -43,6 +43,7 @@
 - (id)initWithSize:(CGSize)size;
 - (id)initWithViewController:(UIViewController *)viewController;
 - (id)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitles:(NSString *)otherButtonTitles, ... NS_REQUIRES_NIL_TERMINATION;
+- (id)initWithTitle:(NSString *)title message:(NSString *)message delegate:(id)delegate cancelButtonTitle:(NSString *)cancelButtonTitle otherButtonTitle:(NSString *)otherButtonTitle;
 
 - (void)setSize:(CGSize)size animated:(BOOL)animated;
 - (void)setSize:(CGSize)size;
