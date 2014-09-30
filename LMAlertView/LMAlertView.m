@@ -348,7 +348,7 @@
 	
 	_representationView = [[UIView alloc] initWithFrame:frame];
     //_representationView.center = CGPointMake([[UIScreen mainScreen] bounds].size.width / 2.0, [[UIScreen mainScreen] bounds].size.height / 2.0);
-    _representationView.center = CGPointMake(177, 512);	// DFH
+    _representationView.center = CGPointMake(196, 400);	// DFH
 	
 	_representationView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 	[_representationView.layer setMasksToBounds:YES];
@@ -404,6 +404,8 @@
 }
 
 - (void)transformAlertContainerViewForOrientation{
+NSLog(@"TRANSLATE!");
+
 #define DegreesToRadians(degrees) (degrees * M_PI / 180)
     UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
     CGAffineTransform transform;
@@ -444,7 +446,7 @@
 	self.window.windowLevel = UIWindowLevelAlert;
 	self.window.hidden = NO;
 	
-	[self transformAlertContainerViewForOrientation];
+//	[self transformAlertContainerViewForOrientation]; DFH
 	[self.window makeKeyAndVisible];
 	
 	if (self.controller == nil) {
