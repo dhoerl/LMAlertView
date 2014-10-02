@@ -8,7 +8,7 @@
 
 #import "LMAlertView.h"
 #import "LMEmbeddedViewController.h"
-#import "CAAnimation+Blocks.h" // DFH
+#import "CAAnimation+Blocks.h"
 #import "LMModalItemTableViewCell.h"
 
 @interface LMAlertView ()	<UITableViewDataSource, UITableViewDelegate>
@@ -355,11 +355,8 @@
 	[_alertContainerView addSubview:_backgroundView];
 	
 	_representationView = [[UIView alloc] initWithFrame:(CGRect){.size = size}];
-#if 0 // DFH
     _representationView.center = CGPointMake(screenSize.width / 2.0, screenSize.height / 2.0);
-#else
-    _representationView.center = CGPointMake(196, 400);	// DFH
-#endif
+    _representationView.center = CGPointMake(198, 400); // DFH
 	
 	_representationView.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin;
 	[_representationView.layer setMasksToBounds:YES];
@@ -388,7 +385,7 @@
 	
 	[self.alertContainerView addSubview:self.representationView];
 	
-	NSLog(@"FRAMES: _representationView=%@", NSStringFromCGRect([_representationView frame]));						// BG=%@ RV=%@ ABV=%@ CV=%@
+	//NSLog(@"FRAMES: _representationView=%@", NSStringFromCGRect([_representationView frame]));						// BG=%@ RV=%@ ABV=%@ CV=%@
 }
 
 
@@ -429,7 +426,11 @@
             break;
     }
     
-    [self.alertContainerView setTransform:transform];
+    //[self.alertContainerView setTransform:transform]; // DFH
+    [self.window setTransform:transform];
+	CGRect frame = self.window.frame;
+	frame.origin = CGPointMake(0, 0);
+	self.window.frame = frame;
 }
 
 - (void)show
@@ -441,7 +442,9 @@
 	id<UIApplicationDelegate> appDelegate = [[UIApplication sharedApplication] delegate];
 	
 	// You can have more than one UIWindow in the view hierachy, which is how UIAlertView works
-	self.window = [[UIWindow alloc] initWithFrame:[appDelegate window].frame];
+	CGRect frame = [appDelegate window].frame;
+	
+	self.window = [[UIWindow alloc] initWithFrame:frame];
 	self.window.tintColor = self.tintColor;
 	
 	LMEmbeddedViewController *viewController = [[LMEmbeddedViewController alloc] init];
@@ -450,12 +453,13 @@
 	self.window.rootViewController = viewController;
 	
 	// Without this, the alert background will appear black on rotation
-	self.window.backgroundColor = [UIColor clearColor];
+	self.window.backgroundColor = [UIColor clearColor]; // DFH change to green to see what it really is
 	// Same window level as regular alert views (above main window and status bar)
 	self.window.windowLevel = UIWindowLevelAlert;
 	self.window.hidden = NO;
 	
-//	[self transformAlertContainerViewForOrientation]; DFH
+	[self transformAlertContainerViewForOrientation];
+
 	[self.window makeKeyAndVisible];
 	
 	if (self.controller == nil) {
@@ -501,7 +505,7 @@
 		
 		// Fade in the gray background
 		[self.backgroundView.layer addAnimation:opacityAnimation forKey:@"opacity"];
-        
+
 		// Fade in the modal
 		// Would love to fade in all these things at once, but UIToolbar doesn't like it
 		[self.toolbar.layer addAnimation:opacityAnimation forKey:@"opacity"];
