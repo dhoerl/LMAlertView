@@ -641,8 +641,11 @@ NSLog(@"TRANSLATE!");
 
 #pragma mark UITableViewDelegateSource delegate methods
 
-- (void)tableView:(id)arg1 didSelectRowAtIndexPath:(id)arg2 {
+- (void)tableView:(id)arg1 didSelectRowAtIndexPath:(NSIndexPath *)arg2 {
 	[self dismiss];
+	
+	NSLog(@"ARG=%@", arg2);
+	NSLog(@"P = %ld - %ld", arg2.row, arg2.section);
 }
 
 @end
