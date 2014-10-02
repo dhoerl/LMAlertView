@@ -9,6 +9,7 @@
 #import "LMViewController.h"
 #import "LMAppDelegate.h"
 #import "LMAlertView.h"
+#import "LMModalItemTableViewCell.h"
 
 @interface LMViewController ()
 
@@ -23,7 +24,27 @@
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
-	NSLog(@"Clicked button at index: %li", (long)buttonIndex);
+	NSLog(@"%@: Clicked button at index: %li", [alertView class] , (long)buttonIndex);
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+	NSLog(@"%@: Did dismiss with button at index: %li", [alertView class] , (long)buttonIndex);
+}
+
+- (void)alertView:(UIAlertView *)alertView willDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+	NSLog(@"%@: Will dismiss with button at index: %li", [alertView class] , (long)buttonIndex);
+}
+
+- (void)willPresentAlertView:(UIAlertView *)alertView
+{
+	NSLog(@"%@: Will present alert view", [alertView class]);
+}
+
+- (void)didPresentAlertView:(UIAlertView *)alertView
+{
+	NSLog(@"%@: Did present alert view", [alertView class]);
 }
 
 #pragma mark EDStarRatingProtocol delegate methods
@@ -34,7 +55,7 @@
 	
 	switch ([[NSNumber numberWithFloat:rating] integerValue]) {
 		case 0:
-			ratingDescription = @"Abysmal";
+			ratingDescription = @"Not yet rated";
 			break;
 		case 1:
 			ratingDescription = @"Piss poor";
@@ -55,6 +76,9 @@
 			return;
 	}
 	
+	LMModalItemTableViewCell *cell = [self.ratingAlertView buttonCellForIndex:self.ratingAlertView.firstOtherButtonIndex];
+	cell.isEnabled = (rating > 0);
+	
 	self.ratingAlertView.message = ratingDescription;
 }
 
@@ -62,18 +86,27 @@
 
 - (IBAction)nativeButtonTapped:(id)sender
 {
-	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Test" message:@"Message here" delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Test" message:@"Message here" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
 	
-	alertView.delegate = self;
+	NSLog(@"%@: First other button index: %li", [alertView class], (long)alertView.firstOtherButtonIndex);
+	NSLog(@"%@: Cancel button index: %li", [alertView class], (long)alertView.cancelButtonIndex);
+	NSLog(@"%@: Number of buttons: %li", [alertView class], (long)alertView.numberOfButtons);
 	
 	[alertView show];
 }
 
 - (IBAction)customButtonTapped:(id)sender
 {
-	LMAlertView *alertView = [[LMAlertView alloc] initWithTitle:@"Test" message:@"Message here" delegate:nil cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-	
-	alertView.delegate = self;
+    LMAlertView *alertView = [[LMAlertView alloc] initWithTitle:@"Test" message:@"Message here" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+
+    //[alertView addButtonWithTitle:@"3rd"];
+    for (NSInteger titleIndex = 0; titleIndex < alertView.numberOfButtons; titleIndex++) {
+        NSLog(@"%@: button title for index %i is: %@", [alertView class], titleIndex, [alertView buttonTitleAtIndex:titleIndex]);
+    }
+    
+	NSLog(@"%@: First other button index: %li", [alertView class], (long)alertView.firstOtherButtonIndex);
+	NSLog(@"%@: Cancel button index: %li", [alertView class], (long)alertView.cancelButtonIndex);
+	NSLog(@"%@: Number of buttons: %li", [alertView class], (long)alertView.numberOfButtons);
 	
 	[alertView show];
 }
@@ -85,8 +118,12 @@
 		return;
 	}
 	
-	self.ratingAlertView = [[LMAlertView alloc] initWithTitle:@"Rate this movie" message:@"Average" delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
+	self.ratingAlertView = [[LMAlertView alloc] initWithTitle:@"Rate this movie" message:@"Average" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Rate", nil];
 	CGSize size = self.ratingAlertView.size;
+	
+	LMModalItemTableViewCell *cell = [self.ratingAlertView buttonCellForIndex: self.ratingAlertView.firstOtherButtonIndex];
+	cell.isEnabled = NO;
+	
 	[self.ratingAlertView setSize:CGSizeMake(size.width, 152.0)];
 	
 	UIView *contentView = self.ratingAlertView.contentView;
@@ -99,7 +136,7 @@
 	starRating.horizontalMargin = 12.0;
 	starRating.editable = YES;
 	starRating.displayMode = EDStarRatingDisplayFull;
-	starRating.rating = 3;
+	starRating.rating = 0;
 	starRating.backgroundColor = [UIColor clearColor];
 	
 	[contentView addSubview:starRating];
@@ -109,7 +146,7 @@
 
 - (IBAction)cardButtonTapped:(id)sender
 {
-	LMAlertView *cardAlertView = [[LMAlertView alloc] initWithTitle:@"Choose a card" message:nil delegate:nil cancelButtonTitle:@"Done" otherButtonTitles:nil];
+	LMAlertView *cardAlertView = [[LMAlertView alloc] initWithTitle:@"Choose a card" message:nil delegate:self cancelButtonTitle:@"Done" otherButtonTitles:nil];
 	[cardAlertView setSize:CGSizeMake(270.0, 167.0)];
 	
 	UIView *contentView = cardAlertView.contentView;
@@ -118,14 +155,22 @@
 	
 	UIImageView *card1ImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Visa"]];
 	card1ImageView.frame = CGRectMake(45.0, yOffset, card1ImageView.frame.size.width, card1ImageView.frame.size.height);
+	card1ImageView.layer.cornerRadius = 5.0;
+	card1ImageView.layer.masksToBounds = YES;
 	[contentView addSubview:card1ImageView];
 	
 	UIImageView *card2ImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"MasterCard"]];
 	card2ImageView.frame = CGRectMake(110.0, yOffset, card1ImageView.frame.size.width, card1ImageView.frame.size.height);
+	card2ImageView.layer.cornerRadius = 5.0;
+	card2ImageView.layer.masksToBounds = YES;
 	[contentView addSubview:card2ImageView];
 	
 	UIButton *addButton = [UIButton buttonWithType:UIButtonTypeSystem];
 	addButton.frame = CGRectMake(175.0, yOffset, 51.0, 32.0);
+	addButton.layer.cornerRadius = 5.0;
+	addButton.layer.masksToBounds = YES;
+	addButton.layer.borderWidth = 1.0;
+	addButton.layer.borderColor = addButton.tintColor.CGColor;
 	[addButton setImage:[UIImage imageNamed:@"Plus"] forState:UIControlStateNormal];
 	[contentView addSubview:addButton];
 	

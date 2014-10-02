@@ -19,11 +19,11 @@ Spot the difference!
 
 Star rating demo:
 
-![LMAlertView-review@2x](http://lmcd.me/LMAlertView-review@2x.png?2)
+![LMAlertView-review@2x](http://lmcd.me/LMAlertView-review@2x.png?3)
 
 Credit card selection demo:
 
-![LMAlertView-card@2x](http://lmcd.me/LMAlertView-card@2x.png?2)
+![LMAlertView-card@2x](http://lmcd.me/LMAlertView-card@2x.png?3)
 
 Work in progress - embedded view controllers:
 
@@ -62,3 +62,8 @@ UIView *contentView = alertView.contentView;
 
 - [RBBAnimation](https://github.com/robb/RBBAnimation) - I wouldn't have bothered with this if there wasn't a drop-in `CASpringAnimation` replacement. Thanks @robb!
 - [EDStarRating](https://github.com/erndev/EDStarRating) - The star rating control used in the demo
+- [CAAnimationBlocks](https://github.com/xissburg/CAAnimationBlocks)
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/lmcd/lmalertview/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+

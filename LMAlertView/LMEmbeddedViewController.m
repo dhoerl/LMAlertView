@@ -16,7 +16,12 @@
 
 - (void)dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
 {
-	[self.alertView dismiss];
+	[self.alertView dismissWithClickedButtonIndex:-1 animated:YES];
+}
+
+- (BOOL)shouldAutorotate
+{
+    return self.alertView.autoRotate;
 }
 
 @end

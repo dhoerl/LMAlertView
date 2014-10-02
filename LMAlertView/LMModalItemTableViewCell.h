@@ -10,4 +10,7 @@
 
 @interface LMModalItemTableViewCell : UITableViewCell
 
+@property (nonatomic, strong, readonly) UIView *lineView;
+@property (nonatomic) BOOL isEnabled;
+
 @end

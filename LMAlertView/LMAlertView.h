@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "LMModalItemTableViewCell.h"
 
 #ifdef USE_PRIVATE_SPRING_ANIMATION_CLASS
 #define kSpringAnimationClassName CASpringAnimation
@@ -27,8 +28,9 @@
 #define kSpringAnimationClassName RBBSpringAnimation
 #endif
 
-@interface LMAlertView : UIView // DFH
+@interface LMAlertView : UIView <UITableViewDataSource, UITableViewDelegate>
 
+@property (nonatomic, strong) UIColor *tintColor;
 @property (nonatomic, strong, readonly) UIView *contentView;
 @property (nonatomic) BOOL keepTopAlignment;
 @property (unsafe_unretained) id<UIAlertViewDelegate> delegate;
@@ -39,6 +41,8 @@
 @property(nonatomic, readonly) NSInteger numberOfButtons;
 @property(nonatomic, copy) NSString *title;
 @property(nonatomic, readonly, getter=isVisible) BOOL visible;
+@property(nonatomic) BOOL buttonsShouldStack;
+@property(nonatomic) BOOL autoRotate;
 
 - (id)initWithSize:(CGSize)size;
 - (id)initWithViewController:(UIViewController *)viewController;
@@ -50,6 +54,10 @@
 - (CGSize)size;
 
 - (void)show;
-- (void)dismiss;
+- (void)dismissWithClickedButtonIndex:(NSInteger)buttonIndex animated:(BOOL)animated;
+- (NSInteger)addButtonWithTitle:(NSString *)title;
+- (NSString *)buttonTitleAtIndex:(NSInteger)buttonIndex;
+
+- (LMModalItemTableViewCell *)buttonCellForIndex:(NSInteger)buttonIndex;
 
 @end
