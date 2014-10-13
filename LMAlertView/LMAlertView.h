@@ -6,7 +6,8 @@
 //  Copyright (c) 2013 Bestir Ltd. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
+#import <UIKit/UIKit.h> // DFH
+
 #import "LMModalItemTableViewCell.h"
 
 #ifdef USE_PRIVATE_SPRING_ANIMATION_CLASS
